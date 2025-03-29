@@ -17,10 +17,29 @@ function fetchPokemonList() {
             const response = yield fetch("https://pokeapi.co/api/v2/pokemon?limit=20");
             // Convertimos la respuesta a formato JSON.
             const data = yield response.json();
-            // Seleccionamos el contenedor del HTML (TEST DOM1)
+            //Seleccionamos el contenedor del HTML (TEST DOM1)
+            // const container = document.getElementById("pokemon-container");
+            // if (container) {
+            //   container.innerHTML = "<p>Cargando Pokémon...</p>";
+            // }
+            // container.innerHTML = ""; // Limpia el mensaje de carga
+            // Seleccionamos el contenedor del HTML
             const container = document.getElementById("pokemon-container");
-            if (container) {
-                container.innerHTML = "<p>Cargando Pokémon...</p>";
+            if (!container)
+                return;
+            container.innerHTML = ""; // Limpia el mensaje de carga
+            for (const pokemon of data.results) {
+                const detailsResponse = yield fetch(pokemon.url);
+                const details = yield detailsResponse.json();
+                const name = details.name;
+                const imageUrl = details.sprites.front_default;
+                const card = document.createElement("div");
+                card.className = "pokemon-card";
+                card.innerHTML = `
+        <h3>${name}</h3>
+        <img src="${imageUrl}" alt="${name}" />
+      `;
+                container.appendChild(card);
             }
             // Mostramos los resultados por consola para ver qué hemos obtenido.
             console.log(data.results);

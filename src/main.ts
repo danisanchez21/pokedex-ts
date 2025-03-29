@@ -22,13 +22,36 @@ async function fetchPokemonList(): Promise<void> {
 
 
 
-    // Seleccionamos el contenedor del HTML (TEST DOM1)
+    //Seleccionamos el contenedor del HTML (TEST DOM1)
+    // const container = document.getElementById("pokemon-container");
+    // if (container) {
+    //   container.innerHTML = "<p>Cargando Pokémon...</p>";
+    // }
+    // container.innerHTML = ""; // Limpia el mensaje de carga
+
+     // Seleccionamos el contenedor del HTML
     const container = document.getElementById("pokemon-container");
-    if (container) {
-      container.innerHTML = "<p>Cargando Pokémon...</p>";
+    if (!container) return;
+
+     container.innerHTML = ""; // Limpia el mensaje de carga
+
+    for (const pokemon of data.results) {
+      const detailsResponse = await fetch(pokemon.url);
+      const details = await detailsResponse.json();
+    
+      const name: string = details.name;
+      const imageUrl: string = details.sprites.front_default;
+    
+      const card = document.createElement("div");
+      card.className = "pokemon-card";
+      card.innerHTML = `
+        <h3>${name}</h3>
+        <img src="${imageUrl}" alt="${name}" />
+      `;
+    
+      container.appendChild(card);
     }
-
-
+    
 
 
 
