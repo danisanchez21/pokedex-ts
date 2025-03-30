@@ -42,8 +42,8 @@ const typeTranslations: Record<string, { label: string; iconPath: string; hoverC
 // Función asíncrona que obtiene la lista de los primeros 20 Pokémon y los muestra en tarjetas dentro del contenedor HTML
 async function fetchPokemonList(): Promise<void> {
   try {
-    // Hacemos una petición GET a la PokeAPI
-    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=20");
+    // Hacemos una petición GET a la PokeAPI, con los pokémons de 1ªGEN (151)
+    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
     const data: PokemonAPIResponse = await response.json();
 
     // Seleccionamos el contenedor del DOM donde se mostrarán las tarjetas
@@ -166,6 +166,11 @@ async function fetchPokemonByType(typeName: string): Promise<void> {
     // Recorremos cada Pokémon de la lista básica
     for (const entry of data.pokemon) {
       const pokemonInfo = entry.pokemon;
+
+    // Limitar a los primeros 151 Pokémon (Gen 1)
+    const idMatch = pokemonInfo.url.match(/\/pokemon\/(\d+)\//);
+    const id = idMatch ? parseInt(idMatch[1]) : 0;
+    if (id > 151) continue;
 
       // Hacemos una nueva petición para obtener los detalles de ese Pokémon
       const detailsResponse = await fetch(pokemonInfo.url);

@@ -33,8 +33,8 @@ const typeTranslations = {
 function fetchPokemonList() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // Hacemos una petición GET a la PokeAPI
-            const response = yield fetch("https://pokeapi.co/api/v2/pokemon?limit=20");
+            // Hacemos una petición GET a la PokeAPI, con los pokémons de 1ªGEN (151)
+            const response = yield fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
             const data = yield response.json();
             // Seleccionamos el contenedor del DOM donde se mostrarán las tarjetas
             const container = document.getElementById("pokemon-container");
@@ -145,6 +145,11 @@ function fetchPokemonByType(typeName) {
             // Recorremos cada Pokémon de la lista básica
             for (const entry of data.pokemon) {
                 const pokemonInfo = entry.pokemon;
+                // Limitar a los primeros 151 Pokémon (Gen 1)
+                const idMatch = pokemonInfo.url.match(/\/pokemon\/(\d+)\//);
+                const id = idMatch ? parseInt(idMatch[1]) : 0;
+                if (id > 151)
+                    continue;
                 // Hacemos una nueva petición para obtener los detalles de ese Pokémon
                 const detailsResponse = yield fetch(pokemonInfo.url);
                 const details = yield detailsResponse.json();
