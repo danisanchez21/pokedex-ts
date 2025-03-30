@@ -1,86 +1,66 @@
-// Definimos una "interfaz" para describir cómo es un objeto Pokémon básico.
-// Cada Pokémon de la lista tiene un "name" (nombre) y una "url" (link a más datos).
+// Interfaz para representar la información básica de un Pokémon.
+// Cada objeto contiene el nombre y la URL para obtener más detalles.
 interface PokemonBasicInfo {
   name: string;
   url: string;
 }
-// Esta es la estructura de la respuesta de la API que devuelve la lista de Pokémon.
-// Solo nos interesa la propiedad "results", que es un array de Pokémon básicos.
+
+// Interfaz que define la estructura esperada de la respuesta de la API.
+// Nos interesa principalmente la propiedad "results".
 interface PokemonAPIResponse {
-    results: PokemonBasicInfo[];
-  }
+  results: PokemonBasicInfo[];
+}
 
-  // Creamos una función asíncrona para hacer la petición a la API.
-// El tipo Promise<void> indica que la función es asíncrona y no devuelve ningún valor útil (solo hace algo).
+// Función asíncrona que obtiene la lista de los primeros 20 Pokémon y los muestra en tarjetas dentro del contenedor HTML.
 async function fetchPokemonList(): Promise<void> {
-
   try {
-    // Hacemos una solicitud HTTP GET a la API con fetch.
+    // Hacemos una petición GET a la PokeAPI.
     const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=20");
-    // Convertimos la respuesta a formato JSON.
     const data: PokemonAPIResponse = await response.json();
 
-
-
-    //Seleccionamos el contenedor del HTML (TEST DOM1)
-    // const container = document.getElementById("pokemon-container");
-    // if (container) {
-    //   container.innerHTML = "<p>Cargando Pokémon...</p>";
-    // }
-    // container.innerHTML = ""; // Limpia el mensaje de carga
-
-     // Seleccionamos el contenedor del HTML
+    // Seleccionamos el contenedor del DOM donde se mostrarán las tarjetas.
     const container = document.getElementById("pokemon-container");
     if (!container) return;
 
-     container.innerHTML = ""; // Limpia el mensaje de carga
+    // Limpiamos el contenido anterior del contenedor (por si recargamos).
+    container.innerHTML = "";
 
+    // Recorremos cada Pokémon de la lista básica.
     for (const pokemon of data.results) {
+      // Hacemos una nueva petición para obtener los detalles de ese Pokémon.
       const detailsResponse = await fetch(pokemon.url);
       const details = await detailsResponse.json();
-    
+
+      // Extraemos el nombre y la imagen del Pokémon desde su detalle.
       const name: string = details.name;
       const imageUrl: string = details.sprites.front_default;
-    
+
+      // Creamos dinámicamente una tarjeta con estilos de TailwindCSS.
       const card = document.createElement("div");
-      //1. Le aplico estilos de Tailwind
       card.className = `
-      bg-orange-100 border-2 border-purple-300 hover:border-indigo-400
-      hover:bg-blue-50 rounded-xl shadow-md hover:shadow-xl
-      w-44 p-4 flex flex-col items-center justify-between
-      transition-all transform hover:scale-105
-    `;
-    
-    
-    
+        bg-orange-100 border-2 border-purple-300 hover:border-indigo-400
+        hover:bg-blue-50 rounded-xl shadow-md hover:shadow-xl
+        w-44 p-4 flex flex-col items-center justify-between
+        transition-all transform hover:scale-105
+      `;
 
-      // card.innerHTML = `
-      //   <h3>${name}</h3>
-      //   <img src="${imageUrl}" alt="${name}" />
-      // `;
-      
-      //2. Le aplico estilos de Tailwind
+      // Insertamos la imagen y el nombre del Pokémon dentro de la tarjeta.
       card.innerHTML = `
-      <img src="${imageUrl}" alt="${name}" class="w-24 h-24 object-contain mb-2">
-      <h3 class="text-md font-bold text-gray-800 capitalize">${name}</h3>`;
-    
+        <img src="${imageUrl}" alt="${name}" class="w-24 h-24 object-contain mb-2">
+        <h3 class="text-md font-bold text-gray-800 capitalize">${name}</h3>
+      `;
 
-    
+      // Añadimos la tarjeta al contenedor principal en el DOM.
       container.appendChild(card);
     }
-    
 
+    // Mostramos los resultados por consola para depuración.
+    console.log(data.results);
+  } catch (error) {
+    // Manejamos posibles errores de red o respuesta incorrecta.
+    console.error("Error al obtener los Pokémon:", error);
+  }
+}
 
-
-
-        // Mostramos los resultados por consola para ver qué hemos obtenido.
-        console.log(data.results);
-      } catch (error) {
-        // Si algo sale mal (por ejemplo, si no hay internet), mostramos el error por consola.
-        console.error("Error al obtener los Pokémon:", error);
-      }
-    }
-    // Finalmente, llamamos a la función para que se ejecute.
+// Llamamos a la función principal para iniciar el proceso.
 fetchPokemonList();
-
-
