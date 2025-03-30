@@ -10,6 +10,13 @@
 
   <h1 class="text-3xl font-bold bg-yellow-300 text-yellow-600">¡Hola, Pokédex!</h1>
   
+  <!-- Buscador de pokémon por nombres -->
+  <input type="text" id="searchInput" placeholder="Buscar Pokémon por nombre..." autocomplete="off" class="w-full max-w-xs mx-auto my-4 px-4 py-2 border rounded-md shadow-md"/>
+  
+  <p id="no-results" class="text-center text-red-600 font-semibold mt-4 hidden">
+    No se encontraron Pokémon con ese nombre.
+  </p>
+  
   <!-- Contenedor para los botones de tipo -->
   <div
   id="type-filter"
