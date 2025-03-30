@@ -34,11 +34,21 @@ function fetchPokemonList() {
                 const name = details.name;
                 const imageUrl = details.sprites.front_default;
                 const card = document.createElement("div");
-                card.className = "pokemon-card";
+                //1. Le aplico estilos de Tailwind
+                card.className = `
+      bg-orange-100 border-2 border-purple-300 hover:border-indigo-400
+      hover:bg-blue-50 rounded-xl shadow-md hover:shadow-xl
+      w-44 p-4 flex flex-col items-center justify-between
+      transition-all transform hover:scale-105
+    `;
+                // card.innerHTML = `
+                //   <h3>${name}</h3>
+                //   <img src="${imageUrl}" alt="${name}" />
+                // `;
+                //2. Le aplico estilos de Tailwind
                 card.innerHTML = `
-        <h3>${name}</h3>
-        <img src="${imageUrl}" alt="${name}" />
-      `;
+      <img src="${imageUrl}" alt="${name}" class="w-24 h-24 object-contain mb-2">
+      <h3 class="text-md font-bold text-gray-800 capitalize">${name}</h3>`;
                 container.appendChild(card);
             }
             // Mostramos los resultados por consola para ver qué hemos obtenido.
